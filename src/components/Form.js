@@ -14,6 +14,21 @@ const SessionForm = () => {
     sessionInterval: "01",
     totalSessions: "",
   });
+  
+ 
+ const [generatedDates, setGeneratedDates] = useState([]);
+
+ // Function to handle date generation
+ const generateDates = () => {
+   let dates = [];
+   let currentDate = new Date(formData.startDate);
+   
+   for (let i = 0; i < parseInt(formData.totalSessions); i++) {
+     dates.push(new Date(currentDate)); // Store a copy of the current date
+     currentDate.setDate(currentDate.getDate() + parseInt(formData.sessionInterval) + 1);
+   }
+   setGeneratedDates(dates);
+ };
 
   const [savedData, setSavedData] = useState(null); // State to store the saved session data
 
@@ -87,65 +102,101 @@ const SessionForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    generateDates();
     setSavedData(formData); // Store the current form data in the savedData state
   };
+   
+  console.log(generatedDates)
+  console.log(typeof(generatedDates))
 
   return (
     <div className="container">
       <form onSubmit={handleSubmit}>
         <label>Session Start Date</label>
-        <Dateinput Date={formData.startDate} handleChange={handleChange} name="startDate" />
-        
+        <Dateinput
+          Date={formData.startDate}
+          handleChange={handleChange}
+          name="startDate"
+        />
+
         <label>Total Number of Sessions</label>
-        <Inputs value={formData.totalSessions} handleChange={handleChange} name="totalSessions" placeholder="Enter Number of Sessions" />
-          
+        <Inputs
+          value={formData.totalSessions}
+          handleChange={handleChange}
+          name="totalSessions"
+          placeholder="Enter Number of Sessions"
+        />
 
         <label>Session Interval (Days)</label>
-        <Inputs value={formData.sessionInterval} handleChange={handleChange} name="sessionInterval" />
-          
+        <Inputs
+          value={formData.sessionInterval}
+          handleChange={handleChange}
+          name="sessionInterval"
+        />
 
         <label>Tentative Last Session Date</label>
-        <Dateinput  Date={formData.endDate} handleChange={handleChange} name="endDate" readOnly={true} />
-          
-        
+        <Dateinput
+          Date={formData.endDate}
+          handleChange={handleChange}
+          name="endDate"
+          readOnly={true}
+        />
 
-        
-          <label>Session Start Time</label>
-          <Time time={formData.startTime} handleChange={handleChange} name="startTime" />
-          
+        <label>Session Start Time</label>
+        <Time
+          time={formData.startTime}
+          handleChange={handleChange}
+          name="startTime"
+        />
 
-        
-          <label>Session Duration (Minutes)</label>
-          <Inputs value={formData.duration} handleChange={handleChange} name="duration"  />   
-          
+        <label>Session Duration (Minutes)</label>
+        <Inputs
+          value={formData.duration}
+          handleChange={handleChange}
+          name="duration"
+        />
 
-          <label>Session End Time</label>
-          <Time time={formData.endTime} handleChange={handleChange} name="endTime"  readOnly={true} />
-
-        
+        <label>Session End Time</label>
+        <Time
+          time={formData.endTime}
+          handleChange={handleChange}
+          name="endTime"
+          readOnly={true}
+        />
 
         <button type="submit" className="btn btn-primary mt-3">
           Save
         </button>
-        
       </form>
 
-      
       {savedData && (
-         (
-          <Result
-            startDate={savedData.startDate}
-            totalSessions={savedData.totalSessions}
-            sessionInterval={savedData.sessionInterval}
-            endDate={savedData.endDate}
-            startTime={savedData.startTime}
-            duration={savedData.duration}
-            endTime={savedData.endTime}
-          />
-        ) 
-        )
-        
-      }
+        <table className="table table-striped mt-10">
+          <thead>
+            <tr>
+              <th scope="col">S.No</th>
+              <th scope="col">Session Date</th>
+              <th scope="col">Start Time</th>
+              <th scope="col">End Time</th>
+              <th scope="col">Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            {generatedDates.map((item, ind) => {
+              return (
+                <>
+                  <tr key={ind}>
+                    <th scope="row">{ind + 1}</th>
+                    <td>{item.toISOString().split("T")[0]}</td>
+                    <td>{savedData.startTime}</td>
+                    <td>{savedData.endTime}</td>
+                    <td>{`${savedData.duration} Mins`}</td>
+                  </tr>
+                </>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

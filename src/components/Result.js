@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const Result = (props) => {
   return (
@@ -27,6 +27,6 @@ const Result = (props) => {
       </p>
     </div>
   );
-}
+};
 
-export default Result
+export default Result;
