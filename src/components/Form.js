@@ -18,21 +18,20 @@ const SessionForm = () => {
  
  const [generatedDates, setGeneratedDates] = useState([]);
 
- // Function to handle date generation
+
  const generateDates = () => {
    let dates = [];
    let currentDate = new Date(formData.startDate);
    
    for (let i = 0; i < parseInt(formData.totalSessions); i++) {
-     dates.push(new Date(currentDate)); // Store a copy of the current date
+     dates.push(new Date(currentDate)); 
      currentDate.setDate(currentDate.getDate() + parseInt(formData.sessionInterval) + 1);
    }
    setGeneratedDates(dates);
  };
 
-  const [savedData, setSavedData] = useState(null); // State to store the saved session data
+  const [savedData, setSavedData] = useState(null); 
 
-  // Function to calculate the end date based on start date, session interval, and total sessions
   const calculateEndDate = (startDate, totalSessions, sessionInterval) => {
     if (!startDate || !totalSessions || !sessionInterval) return "";
 
@@ -40,21 +39,20 @@ const SessionForm = () => {
     const intervalDays = parseInt(sessionInterval);
     const total = parseInt(totalSessions);
 
-    // Calculate the last session date: start date + (totalSessions - 1) * sessionInterval
     start.setDate(start.getDate() + ((total-1) * intervalDays)+total-1);
-    return start.toISOString().split("T")[0]; // Return the date in YYYY-MM-DD format
+    return start.toISOString().split("T")[0]; 
   };
 
-  // Function to calculate the session end time by adding duration to the start time
+  
   const calculateEndTime = (startTime, duration) => {
     if (!startTime || !duration) return "";
 
-    // Convert startTime ("HH:MM") to minutes
+    
     const [hours, minutes] = startTime.split(":").map(Number);
     const totalMinutes = hours * 60 + minutes + parseInt(duration);
 
-    // Convert total minutes back to "HH:MM" format
-    const newHours = Math.floor(totalMinutes / 60) % 24; // Use modulo 24 to handle overflow
+    
+    const newHours = Math.floor(totalMinutes / 60) % 24; 
     const newMinutes = totalMinutes % 60;
 
     return `${newHours.toString().padStart(2, "0")}:${newMinutes
@@ -63,7 +61,7 @@ const SessionForm = () => {
   };
 
   useEffect(() => {
-    // Calculate and update the tentative last session date
+    
     if (
       formData.startDate &&
       formData.totalSessions &&
@@ -82,7 +80,7 @@ const SessionForm = () => {
   }, [formData.startDate, formData.totalSessions, formData.sessionInterval]);
 
   useEffect(() => {
-    // Calculate and update the session end time
+
     if (formData.startTime && formData.duration) {
       const endTime = calculateEndTime(formData.startTime, formData.duration);
       setFormData({
@@ -103,7 +101,7 @@ const SessionForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     generateDates();
-    setSavedData(formData); // Store the current form data in the savedData state
+    setSavedData(formData);
   };
    
   console.log(generatedDates)
@@ -170,32 +168,7 @@ const SessionForm = () => {
       </form>
 
       {savedData && (
-        <table className="table table-striped mt-10">
-          <thead>
-            <tr>
-              <th scope="col">S.No</th>
-              <th scope="col">Session Date</th>
-              <th scope="col">Start Time</th>
-              <th scope="col">End Time</th>
-              <th scope="col">Duration</th>
-            </tr>
-          </thead>
-          <tbody>
-            {generatedDates.map((item, ind) => {
-              return (
-                <>
-                  <tr key={ind}>
-                    <th scope="row">{ind + 1}</th>
-                    <td>{item.toISOString().split("T")[0]}</td>
-                    <td>{savedData.startTime}</td>
-                    <td>{savedData.endTime}</td>
-                    <td>{`${savedData.duration} Mins`}</td>
-                  </tr>
-                </>
-              );
-            })}
-          </tbody>
-        </table>
+        <Result generatedDates={generatedDates} savedData={savedData} />
       )}
     </div>
   );

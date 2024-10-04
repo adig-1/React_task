@@ -1,30 +1,32 @@
+
+
+
 import React from "react";
 
-const Result = (props) => {
-  return (
-    <div className="card saved-data m-4">
-      <h3>Session Information:</h3>
-      <p>
-        <strong>Start Date:</strong> {props.startDate}
-      </p>
-      <p>
-        <strong>Total Sessions:</strong> {props.totalSessions}
-      </p>
-      <p>
-        <strong>Session Interval (Days):</strong> {props.sessionInterval}
-      </p>
-      <p>
-        <strong>Last Session Date:</strong> {props.endDate}
-      </p>
-      <p>
-        <strong>Start Time:</strong> {props.startTime}
-      </p>
-      <p>
-        <strong>Duration (Minutes):</strong> {props.duration}
-      </p>
-      <p>
-        <strong>End Time:</strong> {props.endTime}
-      </p>
+const Result = ({ generatedDates, savedData }) => {
+  return (<div className="container">
+    <table className="table table-striped mt-10">
+      <thead>
+        <tr>
+          <th scope="col">S.No</th>
+          <th scope="col">Session Date</th>
+          <th scope="col">Start Time</th>
+          <th scope="col">End Time</th>
+          <th scope="col">Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        {generatedDates.map((item, ind) => (
+          <tr key={ind}>
+            <th scope="row">{ind + 1}</th>
+            <td>{item.toISOString().split("T")[0]}</td>
+            <td>{savedData.startTime}</td>
+            <td>{savedData.endTime}</td>
+            <td>{`${savedData.duration} Mins`}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
     </div>
   );
 };
